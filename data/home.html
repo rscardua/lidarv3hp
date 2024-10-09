@@ -1,0 +1,68 @@
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Monitoramento de Distância</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+    </style>
+</head>
+
+<body>
+    <span class="btn-config config-icon" onclick="window.location.href='/login'">⚙</span>
+    <div class="container">
+        <div class="distancia-container">
+            <label for="distancia">Distância Lida (cm):</label>
+            <input type="text" id="distancia" name="distancia" value="" placeholder="Aguardando leitura..." readonly>
+        </div>
+        <div class="alerta-container">
+            <h3>Status de Alerta</h3>
+            <p id="alerta-status" class="alerta-verde">Distância segura</p>
+        </div>
+    </div>
+    <script>
+        // Função para atualizar a distância na interface
+        function atualizarDistancia(distanciaStr) {
+            // Converter a distância recebida de string para um inteiro
+            const distancia = parseInt(distanciaStr, 10);
+
+            // Verificar se a conversão resultou em um número válido
+            if (!isNaN(distancia)) {
+                // Atualizar o campo de texto com o valor da distância
+                document.getElementById("distancia").value = distancia + ' cm';
+                const alertaStatus = document.getElementById("alerta-status");
+
+                // Definir o status de alerta com base no valor da distância
+                if (distancia < 50) {
+                    alertaStatus.textContent = "Veículo em zona de alerta!";
+                    alertaStatus.className = "alerta-vermelho";
+                } else {
+                    alertaStatus.textContent = "Sem ocorrência";
+                    alertaStatus.className = "alerta-verde";
+                }
+            } else {
+                // Caso não haja uma leitura válida
+                document.getElementById("distancia").value = "Sem leitura";
+                const alertaStatus = document.getElementById("alerta-status");
+                alertaStatus.textContent = "Sem leitura";
+                alertaStatus.className = "alerta-cinza";
+            }
+        }
+
+        // Simulação de leitura (para fins de teste)
+        setInterval(function () {
+            fetch('/getDistance').then(function (response) {
+                return response.text();
+            }).then(function (text) {
+                // Passar o valor recebido para a função de atualização, convertendo para inteiro
+                atualizarDistancia(text);
+            }).catch(function (error) {
+                console.error("Erro ao obter a distância:", error);
+                // Caso ocorra um erro na requisição, também exibir "Sem leitura"
+                atualizarDistancia(null);
+            });
+        }, 1000);                    
+    </script>
+</body>
+</html>

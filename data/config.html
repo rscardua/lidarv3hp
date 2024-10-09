@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurações de WiFi e Servidor</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <h2>Configurações de WiFi</h2>
+        <div class="zonas-container">
+            <div class="zona">
+                <h3>Rede WiFi</h3>
+                <div class="zona-colunas">
+                    <div>
+                        <label for="ssid">SSID:</label>
+                        <input type="text" id="ssid" name="ssid" placeholder="Digite o nome da rede WiFi">
+                    </div>
+                    <div>
+                        <label for="senha">Senha:</label>
+                        <input type="password" id="senha" name="senha" placeholder="Digite a senha do WiFi">
+                    </div>
+                </div>
+            </div>
+            <h2>Configurações do Servidor de Alerta</h2>
+            <div class="zona-colunas">
+                <div>
+                    <label for="ip-servidor">IP do Servidor:</label>
+                    <input type="text" id="ip-servidor" name="ip-servidor" placeholder="Digite o IP do servidor">
+                </div>
+                <div>
+                    <label for="porta-servidor">Porta do Servidor:</label>
+                    <input type="text" id="porta-servidor" name="porta-servidor"
+                        placeholder="Digite a porta do servidor">
+                </div>
+            </div>
+        </div>
+        <h2>Configurações de Zonas</h2>
+        <div class="zonas-container">
+            <div class="zona">
+                <h3>Zona 1</h3>
+                <div class="zona-colunas">
+                    <div>
+                        <label for="inicio-zona-1">Início:</label>
+                        <input type="text" id="inicio-zona-1" name="inicio-zona-1"
+                            placeholder="Digite o início da zona 1">
+                    </div>
+                    <div>
+                        <label for="fim-zona-1">Fim:</label>
+                        <input type="text" id="fim-zona-1" name="fim-zona-1" placeholder="Digite o fim da zona 1">
+                    </div>
+                </div>
+            </div>
+            <div class="zona">
+                <h3>Zona 2</h3>
+                <div class="zona-colunas">
+                    <div>
+                        <label for="inicio-zona-2">Início:</label>
+                        <input type="text" id="inicio-zona-2" name="inicio-zona-2"
+                            placeholder="Digite o início da zona 2">
+                    </div>
+                    <div>
+                        <label for="fim-zona-2">Fim:</label>
+                        <input type="text" id="fim-zona-2" name="fim-zona-2" placeholder="Digite o fim da zona 2">
+                    </div>
+                </div>
+            </div>
+            <div class="zona">
+                <h3>Zona 3</h3>
+                <div class="zona-colunas">
+                    <div>
+                        <label for="inicio-zona-3">Início:</label>
+                        <input type="text" id="inicio-zona-3" name="inicio-zona-3"
+                            placeholder="Digite o início da zona 3">
+                    </div>
+                    <div>
+                        <label for="fim-zona-3">Fim:</label>
+                        <input type="text" id="fim-zona-3" name="fim-zona-3" placeholder="Digite o fim da zona 3">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="button" class="btn">Salvar Configurações</button>
+    </div>
+</body>
+
+</html>
