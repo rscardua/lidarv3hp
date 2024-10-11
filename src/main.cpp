@@ -62,7 +62,7 @@ void lidarTask(void *pvParameters)
     }
 
     // Aguarda 10 milissegundos antes da próxima medição (reduzido para aumentar a frequência)
-    vTaskDelay(pdMS_TO_TICKS(10));
+    vTaskDelay(pdMS_TO_TICKS(1));
   }
 }
 

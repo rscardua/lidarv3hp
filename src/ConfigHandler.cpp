@@ -4,18 +4,53 @@
 #include <Preferences.h>
 #include <ArduinoJson.h>
 
-void salvarConfiguracoes(AsyncWebServerRequest *request, Preferences &preferences) {
-  String ssid = request->getParam("ssid", true)->value();
-  String senha = request->getParam("senha", true)->value();
-  String ipServidor = request->getParam("ip-servidor", true)->value();
-  String portaServidor = request->getParam("porta-servidor", true)->value();
-  String token = request->getParam("token", true)->value();
-  String inicioZona1 = request->getParam("inicio-zona-1", true)->value();
-  String fimZona1 = request->getParam("fim-zona-1", true)->value();
-  String inicioZona2 = request->getParam("inicio-zona-2", true)->value();
-  String fimZona2 = request->getParam("fim-zona-2", true)->value();
-  String inicioZona3 = request->getParam("inicio-zona-3", true)->value();
-  String fimZona3 = request->getParam("fim-zona-3", true)->value();
+/**
+ * @brief Salva as configurações recebidas via requisição HTTP na memória não volátil (NVS).
+ *
+ * Esta função recebe uma requisição HTTP contendo um JSON com as configurações e as salva na memória não volátil.
+ * Se algum parâmetro necessário estiver ausente ou se ocorrer um erro na deserialização do JSON, uma resposta de erro é enviada.
+ *
+ * @param request Ponteiro para o objeto AsyncWebServerRequest que representa a requisição HTTP.
+ * @param preferences Referência para o objeto Preferences utilizado para acessar a memória não volátil.
+ * @param data Ponteiro para os dados recebidos na requisição HTTP.
+ * @param len Tamanho dos dados recebidos.
+ */
+void salvarConfiguracoes(AsyncWebServerRequest *request, Preferences &preferences, uint8_t *data, size_t len) {
+  // Converte os dados recebidos em uma string
+  String jsonString = String((char*)data, len);
+
+  // Cria um objeto JSON para armazenar os dados
+  StaticJsonDocument<512> jsonDoc; // Ajuste o tamanho conforme necessário
+
+  // Deserializa a string JSON
+  DeserializationError error = deserializeJson(jsonDoc, jsonString);
+
+  if (error) {
+    Serial.print(F("Erro ao deserializar JSON: "));
+    Serial.println(error.f_str());
+    request->send(400, "application/json", "{\"error\":\"JSON inválido\"}");
+    return;
+  }
+
+  // Extrai os valores do JSON
+  String ssid = jsonDoc["ssid"] | "";
+  String senha = jsonDoc["senha"] | "";
+  String ipServidor = jsonDoc["ip-servidor"] | "";
+  String portaServidor = jsonDoc["porta-servidor"] | "";
+  String token = jsonDoc["token"] | "";
+  String inicioZona1 = jsonDoc["inicio-zona-1"] | "";
+  String fimZona1 = jsonDoc["fim-zona-1"] | "";
+  String inicioZona2 = jsonDoc["inicio-zona-2"] | "";
+  String fimZona2 = jsonDoc["fim-zona-2"] | "";
+  String inicioZona3 = jsonDoc["inicio-zona-3"] | "";
+  String fimZona3 = jsonDoc["fim-zona-3"] | "";
+
+  // Verifica se todos os campos necessários foram fornecidos
+  if (ssid == "" || senha == "" || ipServidor == "" || portaServidor == "" || token == "" ||
+      inicioZona1 == "" || fimZona1 == "" || inicioZona2 == "" || fimZona2 == "" || inicioZona3 == "" || fimZona3 == "") {
+    request->send(400, "application/json", "{\"error\":\"Parâmetros ausentes\"}");
+    return;
+  }
 
   // Salva as informações na memória não volátil (NVS)
   preferences.putString("ssid", ssid);
@@ -33,8 +68,10 @@ void salvarConfiguracoes(AsyncWebServerRequest *request, Preferences &preference
   // Define a flag indicando que a configuração foi salva
   preferences.putBool("configSalva", true);
 
-  request->send(200, "text/plain", "Configurações salvas com sucesso!");
+  // Envia uma resposta de sucesso
+  request->send(200, "application/json", "{\"message\":\"Configurações salvas com sucesso!\"}");
 }
+
 
 void recuperarConfiguracoes(AsyncWebServerRequest *request, Preferences &preferences) {
   if (!preferences.getBool("configSalva", false)) {
@@ -79,9 +116,9 @@ void resetarConfiguracoes(Preferences &preferences) {
 
 void setupConfigHandler(AsyncWebServer &server, Preferences &preferences) {
   // Servidor para salvar as configurações
-  server.on("/salvar", HTTP_POST, [&preferences](AsyncWebServerRequest *request) {
-    salvarConfiguracoes(request, preferences);
-  });
+  server.on("/salvar", HTTP_POST, NULL, NULL, [&preferences](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) {
+    salvarConfiguracoes(request, preferences, data, len);
+  });;
 
   // Servidor para recuperar as configurações
   server.on("/recuperar", HTTP_GET, [&preferences](AsyncWebServerRequest *request) {
