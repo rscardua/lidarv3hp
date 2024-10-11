@@ -10,15 +10,18 @@
         function validarLogin(event) {
             event.preventDefault();
             const username = document.getElementById("username").value;
-            const senha = document.getElementById("password").value;
-
+            const password = document.getElementById("password").value;
+            
+            // Constrói os dados no formato application/x-www-form-urlencoded
+            const dados = `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
+            
             // Envia a requisição para o endpoint de validação de credenciais
             fetch('/validarCredenciais', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/x-www-form-urlencoded'
                 },
-                body: JSON.stringify({ username: username, senha: senha })
+                body: dados
             })
             .then(response => response.json())
             .then(data => {

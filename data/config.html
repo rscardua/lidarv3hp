@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 
-<body>
+<body onload="recuperarConfiguracoes()">
     <div class="container">
         <h2>Configurações de WiFi</h2>
         <div class="zonas-container">
@@ -84,8 +84,64 @@
             </div>
         </div>
 
-        <button type="button" class="btn">Salvar Configurações</button>
+        <button type="button" class="btn" onclick="salvarConfiguracoes()">Salvar Configurações</button>
+        <button type="button" class="btn" onclick="recuperarConfiguracoes()">Recuperar Configurações</button>
     </div>
+
+    <script>
+        // Função para salvar as configurações no servidor
+        function salvarConfiguracoes() {
+            const data = {
+                ssid: document.getElementById('ssid').value,
+                senha: document.getElementById('senha').value,
+                "ip-servidor": document.getElementById('ip-servidor').value,
+                "porta-servidor": document.getElementById('porta-servidor').value,
+                "inicio-zona-1": document.getElementById('inicio-zona-1').value,
+                "fim-zona-1": document.getElementById('fim-zona-1').value,
+                "inicio-zona-2": document.getElementById('inicio-zona-2').value,
+                "fim-zona-2": document.getElementById('fim-zona-2').value,
+                "inicio-zona-3": document.getElementById('inicio-zona-3').value,
+                "fim-zona-3": document.getElementById('fim-zona-3').value
+            };
+
+            fetch('/salvar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.text())
+                .then(data => {
+                    alert(data);
+                })
+                .catch((error) => {
+                    console.error('Erro:', error);
+                });
+        }
+
+        // Função para recuperar as configurações do servidor
+        function recuperarConfiguracoes() {
+            fetch('/recuperar')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('ssid').value = data.ssid;
+                    document.getElementById('senha').value = data.senha;
+                    document.getElementById('ip-servidor').value = data.ipServidor;
+                    document.getElementById('porta-servidor').value = data.portaServidor;
+                    document.getElementById('inicio-zona-1').value = data.inicioZona1;
+                    document.getElementById('fim-zona-1').value = data.fimZona1;
+                    document.getElementById('inicio-zona-2').value = data.inicioZona2;
+                    document.getElementById('fim-zona-2').value = data.fimZona2;
+                    document.getElementById('inicio-zona-3').value = data.inicioZona3;
+                    document.getElementById('fim-zona-3').value = data.fimZona3;
+                })
+                .catch((error) => {
+                    console.error('Erro:', error);
+                });
+        }
+
+    </script>
 </body>
 
 </html>
