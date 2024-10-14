@@ -1,23 +1,29 @@
+GET http://192.168.0.22/recuperar
+
+###
+
 POST http://192.168.0.22/validarCredenciais
 Content-Type: application/x-www-form-urlencoded
 
 username=admin&password=admin
 
-%%
-'''
-POST http://<endereco-do-esp32>/salvar
+###
+
+POST http://192.168.0.22/salvar
 Content-Type: application/json
 
 {
-  "ssid": "MinhaRedeWiFi",
-  "senha": "SenhaSecreta",
-  "ip-servidor": "192.168.0.200",
-  "porta-servidor": "8080",
-  "token": "abc123",
-  "inicio-zona-1": "15",
-  "fim-zona-1": "25",
-  "inicio-zona-2": "26",
-  "fim-zona-2": "35",
-  "inicio-zona-3": "36",
-  "fim-zona-3": "45"
+  "ssid": "CLARO_D4D094",
+  "senha": "NYJmv24gGv",
+  "ipServidor": "192.168.1.1",
+  "portaServidor": "8080",
+  "token": "default_token",
+  "inicioZona1": "10",
+  "fimZona1": "20",
+  "inicioZona2": "20",
+  "fimZona2": "30",
+  "inicioZona3": "30",
+  "fimZona3": "40"
 }
+
+ 
