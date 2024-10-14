@@ -14,9 +14,17 @@
 
 #include "LIDARLite.h"
 
+// Inicialização de variáveis globais e defines
 #include "Global.h"
 
-// Inicialização de variáveis globais e defines
+const int pinoControleTensao = 15;   // Pino de saída do PWM que controla a tensão
+const int canalSaidaAnalogica = 0;   // Canal PWM que gerencia a saída analógica simulada
+const int frequenciaPWM = 5000;      // Frequência do PWM em Hz
+const int resolucaoPWM = 8;          // Resolução do PWM (8 bits: valores entre 0 e 255)
+
+// Configurações da leitura do LiDAR
+const int distanciaMinima = 0;        // Distância mínima esperada (em milímetros)
+const int distanciaMaxima = 4000;     // Distância máxima esperada (em milímetros)
 
 // Inicialização do objeto LIDARLite
 LIDARLite lidarLite;
@@ -46,6 +54,13 @@ void lidarTask(void *pvParameters)
   {
     int distance = lidarLite.distance(); // Faz uma leitura da distância
 
+    // Escalonamento da distância para o intervalo de PWM (0-255)
+    int valorPWM = map(distance, distanciaMinima, distanciaMaxima, 0, 255);
+    valorPWM = constrain(valorPWM, 0, 255);  // Garante que o valor esteja entre 0 e 255
+
+    // Define o valor de saída PWM (duty cycle)
+    ledcWrite(canalSaidaAnalogica, valorPWM);
+
     // Previsão do valor futuro
     P = P + Q;
 
@@ -71,6 +86,12 @@ void setup()
 {
   // Inicializa a comunicação serial para depuração
   Serial.begin(115200);
+
+    // Configura o canal PWM com a frequência e resolução
+  ledcSetup(canalSaidaAnalogica, frequenciaPWM, resolucaoPWM);
+
+  // Associa o canal PWM ao pino de saída para controle da tensão
+  ledcAttachPin(pinoControleTensao, canalSaidaAnalogica);
 
   // Inicializa a memória não volátil
   preferences.begin("config", false);
@@ -117,6 +138,16 @@ void setup()
 
 int blink = 0;
 int lastDistance = -1;
+/**
+ * @brief Função principal de loop do programa.
+ *
+ * Esta função é executada continuamente e realiza as seguintes operações:
+ * - Protege o acesso à variável global de distância utilizando um mutex.
+ * - Copia o valor da variável global de distância para uma variável local.
+ * - Exibe a distância medida no terminal serial apenas se houver uma mudança significativa (>= 2 unidades).
+ * - Atualiza a última distância medida.
+ * - Aguarda 100 ms antes de repetir a leitura para maior responsividade.
+ */
 void loop()
 {
   int distanceCopy;
@@ -138,3 +169,4 @@ void loop()
 
   delay(100); // Aguarda 100 ms antes de repetir a leitura (reduzido para maior responsividade)
 }
+
