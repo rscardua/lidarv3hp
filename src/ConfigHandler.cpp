@@ -46,11 +46,11 @@ void salvarConfiguracoes(AsyncWebServerRequest *request, Preferences &preference
   String fimZona3 = jsonDoc["fim-zona-3"] | "";
 
   // Verifica se todos os campos necessários foram fornecidos
-  if (ssid == "" || senha == "" || ipServidor == "" || portaServidor == "" || token == "" ||
-      inicioZona1 == "" || fimZona1 == "" || inicioZona2 == "" || fimZona2 == "" || inicioZona3 == "" || fimZona3 == "") {
-    request->send(400, "application/json", "{\"error\":\"Parâmetros ausentes\"}");
-    return;
-  }
+  //if (ssid == "" || senha == "" || ipServidor == "" || portaServidor == "" || token == "" ||
+  //    inicioZona1 == "" || fimZona1 == "" || inicioZona2 == "" || fimZona2 == "" || inicioZona3 == "" || fimZona3 == "") {
+  //  request->send(400, "application/json", "{\"error\":\"Parâmetros ausentes\"}");
+  //  return;
+  //}
 
   // Salva as informações na memória não volátil (NVS)
   preferences.putString("ssid", ssid);
@@ -115,10 +115,28 @@ void resetarConfiguracoes(Preferences &preferences) {
 }
 
 void setupConfigHandler(AsyncWebServer &server, Preferences &preferences) {
+  // Define a rota para requisições POST em "/config"
+  // Define a rota para requisições POST em "/salvar"
+  server.on("/salvar", HTTP_POST, 
+    // requestHandler - chamado quando a requisição é recebida
+    [](AsyncWebServerRequest *request){
+      Serial.println("Recebida requisição POST em /salvar");
+      // A resposta será enviada no bodyHandler
+    }, 
+    // uploadHandler - não utilizado neste caso
+    NULL, 
+    // bodyHandler - chamado quando o corpo da requisição é recebido
+    [&preferences](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) {
+      Serial.printf("Recebendo dados: %u bytes\n", len);
+      salvarConfiguracoes(request, preferences, data, len);
+    }
+  );
+
+
   // Servidor para salvar as configurações
-  server.on("/salvar", HTTP_POST, NULL, NULL, [&preferences](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) {
-    salvarConfiguracoes(request, preferences, data, len);
-  });;
+  //server.on("/salvar", HTTP_POST, NULL, NULL, [&preferences](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) {
+  //  salvarConfiguracoes(request, preferences, data, len);
+  //});;
 
   // Servidor para recuperar as configurações
   server.on("/recuperar", HTTP_GET, [&preferences](AsyncWebServerRequest *request) {
