@@ -72,7 +72,6 @@ void setupWiFi()
   {
     Serial.println("Nenhuma configuração de WiFi salva. Entrando em modo AP para configuração.");
     startAccessPoint();
-    return;
   }
 
   // Conecta ao WiFi usando as credenciais armazenadas
@@ -106,7 +105,7 @@ void setupWiFi()
     preferences.remove("senha");
     Serial.println("Credenciais de WiFi removidas. Entrando em modo AP para configuração.");
     startAccessPoint();
-  }
+  } 
 
   // Define a rota para servir a página home.html do sistema de arquivos SPIFFS
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
