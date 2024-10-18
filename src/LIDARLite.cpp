@@ -34,8 +34,8 @@
 #define REGISTER_ACQ_COMMAND 0x00
 #define REGISTER_DISTANCE_MSB 0x8f
 
-#define SCL_PIN 9
-#define SDA_PIN 8
+#define SCL_PIN 22
+#define SDA_PIN 21
 #define CLOCKSPEED 400000UL
 
 

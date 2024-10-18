@@ -65,7 +65,7 @@ void salvarConfiguracoes(AsyncWebServerRequest *request, Preferences &preference
   preferences.putString("fimZona2", fimZona2);
   preferences.putString("inicioZona3", inicioZona3);
   preferences.putString("fimZona3", fimZona3);
-  preferences.putString("fimZona3", fatorDivisao);
+  preferences.putString("fatorDivisao", fatorDivisao);
 
   // Define a flag indicando que a configuração foi salva
   preferences.putBool("configSalva", true);
@@ -112,6 +112,7 @@ void resetarConfiguracoes(Preferences &preferences) {
   preferences.putString("fimZona2", "30");
   preferences.putString("inicioZona3", "30");
   preferences.putString("fimZona3", "40");
+  preferences.putString("fatorDivisao", "40");
 
   // Define a flag indicando que a configuração não foi salva
   preferences.putBool("configSalva", false);

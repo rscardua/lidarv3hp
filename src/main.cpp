@@ -7,6 +7,9 @@
 #include "freertos/queue.h"
 #include <string.h>
 #include <math.h>
+#include <stdlib.h>  // Biblioteca necessária para atoi()
+
+using namespace std;
 
 #include <Preferences.h>
 #include "WiFiManager.h"
@@ -17,14 +20,15 @@
 // Inicialização de variáveis globais e defines
 #include "Global.h"
 
+
 const int pinoControleTensao = 15;   // Pino de saída do PWM que controla a tensão
-const int canalSaidaAnalogica = 0;   // Canal PWM que gerencia a saída analógica simulada
+const int canalSaidaAnalogica = 26;   // Canal PWM que gerencia a saída analógica simulada
 const int frequenciaPWM = 5000;      // Frequência do PWM em Hz
 const int resolucaoPWM = 8;          // Resolução do PWM (8 bits: valores entre 0 e 255)
 
 // Configurações da leitura do LiDAR
 const int distanciaMinima = 0;        // Distância mínima esperada (em milímetros)
-const int distanciaMaxima = 4000;     // Distância máxima esperada (em milímetros)
+const int distanciaMaxima = 400;     // Distância máxima esperada (em milímetros)
 
 // Inicialização do objeto LIDARLite
 LIDARLite lidarLite;
@@ -55,11 +59,12 @@ void lidarTask(void *pvParameters)
     int distance = lidarLite.distance(); // Faz uma leitura da distância
 
     // Escalonamento da distância para o intervalo de PWM (0-255)
-    int valorPWM = map(distance, distanciaMinima, distanciaMaxima, 0, 255);
+    int valorPWM = map(distance, distanciaMinima, fator_divisao, 0, 255);
     valorPWM = constrain(valorPWM, 0, 255);  // Garante que o valor esteja entre 0 e 255
 
     // Define o valor de saída PWM (duty cycle)
-    ledcWrite(canalSaidaAnalogica, valorPWM);
+    dacWrite(canalSaidaAnalogica, valorPWM);
+   // ledcWrite(canalSaidaAnalogica, valorPWM);
 
     // Previsão do valor futuro
     P = P + Q;
@@ -84,6 +89,7 @@ void lidarTask(void *pvParameters)
 // Função de configuração inicial do ESP32-S3
 void setup()
 {
+  String fator;
   // Inicializa a comunicação serial para depuração
   Serial.begin(115200);
 
@@ -95,6 +101,10 @@ void setup()
 
   // Inicializa a memória não volátil
   preferences.begin("config", false);
+
+  fator_divisao = 12000;// stoi(preferences.getString("fatorDivisao" , "120").c_str());
+ 
+  printf("Fato divisão: %s" , preferences.getString("fatorDivisao" , "120").c_str());
 
   if (!preferences.getBool("configSalva", false)) {
     printf("Configurações não salvas. Resetando para valores padrão.\n");
