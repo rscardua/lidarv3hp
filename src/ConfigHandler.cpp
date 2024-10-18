@@ -44,6 +44,7 @@ void salvarConfiguracoes(AsyncWebServerRequest *request, Preferences &preference
   String fimZona2 = jsonDoc["fim-zona-2"] | "";
   String inicioZona3 = jsonDoc["inicio-zona-3"] | "";
   String fimZona3 = jsonDoc["fim-zona-3"] | "";
+  String fatorDivisao = jsonDoc["fator-divisao"] | "";
 
   // Verifica se todos os campos necessários foram fornecidos
   //if (ssid == "" || senha == "" || ipServidor == "" || portaServidor == "" || token == "" ||
@@ -64,6 +65,7 @@ void salvarConfiguracoes(AsyncWebServerRequest *request, Preferences &preference
   preferences.putString("fimZona2", fimZona2);
   preferences.putString("inicioZona3", inicioZona3);
   preferences.putString("fimZona3", fimZona3);
+  preferences.putString("fimZona3", fatorDivisao);
 
   // Define a flag indicando que a configuração foi salva
   preferences.putBool("configSalva", true);
@@ -91,6 +93,7 @@ void recuperarConfiguracoes(AsyncWebServerRequest *request, Preferences &prefere
   jsonResponse["fimZona2"] = preferences.getString("fimZona2", "30");
   jsonResponse["inicioZona3"] = preferences.getString("inicioZona3", "30");
   jsonResponse["fimZona3"] = preferences.getString("fimZona3", "40");
+  jsonResponse["fatorDivisao"] = preferences.getString("fatorDivisao", "40");
 
   String response;
   serializeJson(jsonResponse, response);
