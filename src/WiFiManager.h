@@ -7,10 +7,14 @@
 #include <ESPAsyncWebServer.h>
 #include <SPIFFS.h>
 
+#include <ESPAsyncHTTPUpdateServer.h>
+
 #include "Global.h"
 
 Preferences preferences;
 AsyncWebServer server(80);
+//create an object from the UpdateServer
+ESPAsyncHTTPUpdateServer updateServer;
 
 /**
  * @brief Inicia o modo Access Point para configuração do ESP32.
@@ -57,7 +61,7 @@ void setupWiFi()
   // Recupera SSID e senha da memória não volátil (NVS)
   String ssid = "KIWI_AP324_2.4Ghz"; // preferences.getString("ssid", "");
   // String senha = preferences.getString("senha", "");
-String senha = "85542022";
+  String senha = "85542022";
   // Imprime SSID e senha recuperados
   Serial.printf("SSID: %s", ssid.c_str());
   Serial.printf("Senha: %s", senha.c_str());
@@ -79,6 +83,11 @@ String senha = "85542022";
 
   Serial.print("Conectando-se a ");
   Serial.println(ssid);
+
+  // Reconnect if connection is lost
+  WiFi.setAutoReconnect(true);
+  // Modem sleep when in WIFI_STA mode not a good idea as someone might want to talk to it
+  WiFi.setSleep(false);
 
   // Aguarda conexão com limite de tempo
   int tentativas = 0;
@@ -105,7 +114,7 @@ String senha = "85542022";
     preferences.remove("senha");
     Serial.println("Credenciais de WiFi removidas. Entrando em modo AP para configuração.");
     startAccessPoint();
-  } 
+  }
 
   // Define a rota para servir a página home.html do sistema de arquivos SPIFFS
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
@@ -234,6 +243,11 @@ String senha = "85542022";
   // Define a rota para servir arquivos estáticos, como CSS e JavaScript
   server.serveStatic("/styles.css", SPIFFS, "/styles.css").setCacheControl("max-age=600");
   server.serveStatic("/Roboto.woff2", SPIFFS, "/Roboto.woff2").setCacheControl("max-age=600");
+
+  
+    
+  //setup the updateServer with credentials
+  updateServer.setup(&server, "admin", "admin");
 
   server.begin();
 }
