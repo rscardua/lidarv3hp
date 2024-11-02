@@ -59,9 +59,9 @@ void setupWiFi()
   }
 
   // Recupera SSID e senha da memória não volátil (NVS)
-  String ssid = "KIWI_AP324_2.4Ghz"; // preferences.getString("ssid", "");
-  // String senha = preferences.getString("senha", "");
-  String senha = "85542022";
+  String ssid =  preferences.getString("ssid", "");
+  String senha = preferences.getString("senha", "");
+  //String senha = "85542022";
   // Imprime SSID e senha recuperados
   Serial.printf("SSID: %s", ssid.c_str());
   Serial.printf("Senha: %s", senha.c_str());

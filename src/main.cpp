@@ -170,7 +170,7 @@ void loop()
   }
 
   // Exibe a distância medida no terminal serial apenas se houver uma mudança significativa
-  if (abs(distanceCopy - lastDistance) >= 2)
+  if (abs(distanceCopy - lastDistance) >= 20)
   {
     Serial.print("Distância medida: ");
     Serial.println(distanceCopy);
