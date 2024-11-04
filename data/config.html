@@ -99,6 +99,18 @@
                     </div>
                 </div>
             </div>
+            <div class="zona">
+                <h3>Filtro Kalman</h3>
+                <div class="zona-colunas">
+                    <div>
+                        <label for="filtro-Kalman">Aplicar filtro de Kalman:</label>
+                        <select id="filtro-Kalman" name="filtro-Kalman">
+                            <option value="0" selected>Não</option>
+                            <option value="1">Sim</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="button-container">
             <button type="button" class="btn btn-cancel" onclick="window.location.href='/'">Cancelar</button>
@@ -121,7 +133,8 @@
                 "fim-zona-2": document.getElementById('fim-zona-2').value,
                 "inicio-zona-3": document.getElementById('inicio-zona-3').value,
                 "fim-zona-3": document.getElementById('fim-zona-3').value,
-                "fator-divisao" : document.getElementById('fator-divisao').value
+                "fator-divisao" : document.getElementById('fator-divisao').value,
+                "filtro-Kalman": document.getElementById('filtro-Kalman').value
             };
 
             fetch('/salvar', {
@@ -168,6 +181,7 @@
                     document.getElementById('inicio-zona-3').value = data.inicioZona3;
                     document.getElementById('fim-zona-3').value = data.fimZona3;
                     document.getElementById('fator-divisao').value = data.fatorDivisao;
+                    document.getElementById('filtro-Kalman').value = data.filtroKalman;
                 })
                 .catch((error) => {
                     console.error('Erro:', error);

@@ -45,6 +45,7 @@ void salvarConfiguracoes(AsyncWebServerRequest *request, Preferences &preference
   String inicioZona3 = jsonDoc["inicio-zona-3"] | "";
   String fimZona3 = jsonDoc["fim-zona-3"] | "";
   String fatorDivisao = jsonDoc["fator-divisao"] | "";
+  String FiltroKalman = jsonDoc["filtro-kalman"] | "";
 
   // Verifica se todos os campos necessários foram fornecidos
   //if (ssid == "" || senha == "" || ipServidor == "" || portaServidor == "" || token == "" ||
@@ -66,6 +67,7 @@ void salvarConfiguracoes(AsyncWebServerRequest *request, Preferences &preference
   preferences.putString("inicioZona3", inicioZona3);
   preferences.putString("fimZona3", fimZona3);
   preferences.putString("fatorDivisao", fatorDivisao);
+  preferences.putString("FiltroKalman", FiltroKalman);
 
   // Define a flag indicando que a configuração foi salva
   preferences.putBool("configSalva", true);
@@ -94,6 +96,7 @@ void recuperarConfiguracoes(AsyncWebServerRequest *request, Preferences &prefere
   jsonResponse["inicioZona3"] = preferences.getString("inicioZona3", "30");
   jsonResponse["fimZona3"] = preferences.getString("fimZona3", "40");
   jsonResponse["fatorDivisao"] = preferences.getString("fatorDivisao", "40");
+  jsonResponse["FiltroKalman"] = preferences.getString("FiltroKalman", "0");
 
   String response;
   serializeJson(jsonResponse, response);
@@ -113,6 +116,7 @@ void resetarConfiguracoes(Preferences &preferences) {
   preferences.putString("inicioZona3", "30");
   preferences.putString("fimZona3", "40");
   preferences.putString("fatorDivisao", "40");
+  preferences.putString("FiltroKalman", "0");
 
   // Define a flag indicando que a configuração não foi salva
   preferences.putBool("configSalva", false);

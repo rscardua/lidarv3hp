@@ -66,24 +66,39 @@ void lidarTask(void *pvParameters)
     dacWrite(canalSaidaAnalogica, valorPWM);
    // ledcWrite(canalSaidaAnalogica, valorPWM);
 
-    // Previsão do valor futuro
-    P = P + Q;
-
-    // Atualização do filtro de Kalman
-    K = P / (P + R);
-    filteredDistance = filteredDistance + K * (distance - filteredDistance);
-    P = (1 - K) * P;
-
-    // Proteção para o acesso à variável global
-    if (xSemaphoreTake(xDistanceMutex, portMAX_DELAY) == pdTRUE)
+   if (FiltroKalman==1)
     {
-      globalDistance = (int)filteredDistance;
-      xSemaphoreGive(xDistanceMutex);
+      // Filtro de Kalman
+      // ----------------
+      // Previsão do valor futuro
+      P = P + Q;
+
+      // Atualização do filtro de Kalman
+      K = P / (P + R);
+      filteredDistance = filteredDistance + K * (distance - filteredDistance);
+      P = (1 - K) * P;
+
+      // Proteção para o acesso à variável global
+      if (xSemaphoreTake(xDistanceMutex, portMAX_DELAY) == pdTRUE)
+      {
+        globalDistance = (int)filteredDistance;
+        xSemaphoreGive(xDistanceMutex);
+      }
+    }
+    else
+    {
+      // Proteção para o acesso à variável global
+      if (xSemaphoreTake(xDistanceMutex, portMAX_DELAY) == pdTRUE)
+      {
+        globalDistance = distance;
+        xSemaphoreGive(xDistanceMutex);
+      }
     }
 
     // Aguarda 1 milissegundos antes da próxima medição (reduzido para aumentar a frequência)
-    vTaskDelay(pdMS_TO_TICKS(1));
+    vTaskDelay(pdMS_TO_TICKS(1));   
   }
+
 }
 
 // Função de configuração inicial do ESP32-S3

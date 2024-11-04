@@ -36,5 +36,7 @@ extern std::string ipServidor;
 // variavel com porta do servidor
 extern std::string portaServidor;
 
+extern volatile int FiltroKalman;
+
 
 #endif // GLOBALS_H

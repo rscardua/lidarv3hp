@@ -34,4 +34,6 @@ std::string ipServidor = "";
 // variavel com porta do servidor
 std::string portaServidor = "";
 
+volatile int FiltroKalman = 0;
+
 
